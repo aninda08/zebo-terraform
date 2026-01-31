@@ -73,6 +73,14 @@ jobs:
       - name: Disable deletion protection on GKE cluster
         run: terraform apply -input=false -auto-approve -var-file=dev.ci.tfvars -target=module.gke_cluster.google_container_cluster.primary
 
+      - name: Install gke-gcloud-auth-plugin
+        run: |
+          # Install the auth plugin
+          sudo apt-get update && sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin -y
+          
+          # Update kubeconfig to use the auth plugin
+          echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+          
       - name: Configure kubectl
         run: |
           # Get cluster credentials
