@@ -97,19 +97,19 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: terraform apply -input=false -auto-approve -var-file=dev.ci.tfvars
 
-      # - name: Apply ArgoCD Root Application
-      #   if: github.ref == 'refs/heads/main'
-      #   run: |
-      #     # Get cluster credentials
-      #     gcloud container clusters get-credentials $(terraform output -raw kubernetes_cluster_name) \
-      #       --region $(terraform output -raw region) \
-      #       --project $(terraform output -raw project_id)
+      - name: Apply ArgoCD Root Application
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Get cluster credentials
+          gcloud container clusters get-credentials $(terraform output -raw kubernetes_cluster_name) \
+            --region $(terraform output -raw region) \
+            --project $(terraform output -raw project_id)
           
-      #     # Apply the root application
-      #     kubectl apply -f ../../argocd/root-application.yaml
+          # Apply the root application
+          kubectl apply -f ../../argocd/root-application.yaml
           
-      #     # Wait for the application to be created
-      #     kubectl wait --for=condition=established --timeout=60s -n argocd crd/applications.argoproj.io
+          # Wait for the application to be created
+          kubectl wait --for=condition=established --timeout=60s -n argocd crd/applications.argoproj.io
 
       - name: Get ArgoCD Info
         if: github.ref == 'refs/heads/main'
