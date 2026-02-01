@@ -77,10 +77,13 @@ jobs:
         run: terraform state list
 
       - name: Terraform state for helm kubernetes and argocd
-        run:  |
-          terraform state list | grep kubernetes
-          terraform state list | grep helm
-          terraform state list | grep argocd
+        run:  terraform state list | grep -E "kubernetes|helm|argocd"
+
+      - name: Terraform state remove for helm kubernetes and argocd
+        run: |
+          terraform state rm kubernetes_namespace.argocd
+          terraform state rm kubernetes_service.argocd_server_lb
+          terraform state rm helm_release.argocd
 
       - name: Terraform state after cleanup
         run: terraform state list | grep -E "kubernetes|helm|argocd"
